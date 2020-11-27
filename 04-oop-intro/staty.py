@@ -44,11 +44,54 @@ class CovidStaty(Staty):
     def __add__(self, other):
         return self.pocet_nakazenych + other.pocet_nakazenych
 
+    @property
+    def pocet_nakazenych(self):
+        return self.__pocet_nakazenych
+
+    @pocet_nakazenych.setter
+    def pocet_nakazenych(self, aktulane_nakazeni):
+        try:
+            aktulane_nakazeni = int(aktulane_nakazeni)
+            if aktulane_nakazeni < 0:
+                raise Exception(f'Zadaný údaj není platný.')
+            self.__pocet_nakazenych = aktulane_nakazeni
+        except ValueError:
+            raise ValueError(f'Zadaný údaj není platný.')
+
+    @property
+    def pocet_obyvatel(self):
+        return self.__pocet_obyvatel
+
+    @pocet_obyvatel.setter
+    def pocet_obyvatel(self, novy_udaj):
+        try:
+            novy_udaj = int(novy_udaj)
+            if novy_udaj < 0:
+                raise Exception(f'Zadaný údaj není platný.')
+            self.__pocet_obyvatel = novy_udaj
+        except ValueError:
+            raise ValueError(f'Zadaný údaj není platný.')
+
+class UdajeStaty(Staty):
+
+    def __init__(self, nazev, pocet_obyvatel, rozloha, prezident, premier, hlavni_mesto):
+        super().__init__(nazev, pocet_obyvatel, rozloha)
+        self.prezident = prezident
+        self.premier = premier
+        self.hlavni_mesto = hlavni_mesto
+
+    def __str__(self):
+        return '{} s hlavním městem {} a rozlouhou {} km2 má {} obyvatel. V čele státu stojí prezident/ka {} a premiér/ka {}.'.format(self.nazev, self.hlavni_mesto, self.rozloha, self.pocet_obyvatel, self.prezident, self.premier)
+
+
+
 stat1 = CovidStaty('Česká republika', 10690000, 88825, 78866)
 stat2 = CovidStaty('Německo', 83020000, 305407, 357023)
 r = 1.1
 nakazeni = 1000
 
+stat1.pocet_nakazenych = 71867
+stat1.pocet_obyvatel = 10698080
 print('\n')
 print('Pokud je dnes {} nakažených, zítřejší přírustek při reprodukčním čísle r = {} bude činit {} nakažených.'.format(nakazeni, r, CovidStaty.narust(nakazeni, r)))
 print('\n')
@@ -74,17 +117,6 @@ else:
 print('\n')
 print('Pokud má dnes {} {} nakažených, zítra bude při reprodukčním čísle {} {} nakažených'.format(stat1.nazev, stat1.pocet_nakazenych, r, round(stat1 * r)))
 print('{} a {} má dohromady {} aktuálně nakažených.'.format(stat1.nazev, stat2.nazev, stat1 + stat2))
-
-class UdajeStaty(Staty):
-
-    def __init__(self, nazev, pocet_obyvatel, rozloha, prezident, premier, hlavni_mesto):
-        super().__init__(nazev, pocet_obyvatel, rozloha)
-        self.prezident = prezident
-        self.premier = premier
-        self.hlavni_mesto = hlavni_mesto
-
-    def __str__(self):
-        return '{} s hlavním městem {} a rozlouhou {} km2 má {} obyvatel. V čele státu stojí prezident/ka {} a premiér/ka {}.'.format(self.nazev, self.hlavni_mesto, self.rozloha, self.pocet_obyvatel, self.prezident, self.premier)
 
 stat1 = UdajeStaty('Česká republika', 10690000, 78866, 'Miloš Zeman', 'Andrej Babiš', 'Praha')
 print('\n')
